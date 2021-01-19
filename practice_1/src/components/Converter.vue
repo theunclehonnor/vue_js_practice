@@ -32,7 +32,7 @@ export default {
           label: 'Футы в метры',
           inputLabel: 'Футы',
           outputLabel: 'Метры',
-          inputValues: 1,
+          inputValues: 0,
           outputValues: 0
         },
         {
@@ -40,7 +40,7 @@ export default {
           label: 'Морские мили в километры',
           inputLabel: 'Морские мили',
           outputLabel: 'Километры',
-          inputValues: 1,
+          inputValues: 0,
           outputValues: 0
         },
         {
@@ -48,7 +48,7 @@ export default {
           label: 'Градусы в радианы',
           inputLabel: 'Градусы',
           outputLabel: 'Радианы',
-          inputValues: 1,
+          inputValues: 0,
           outputValues: 0
         },
         {
@@ -56,7 +56,7 @@ export default {
           label: 'Температуру по Цельсию в температуру по Фаренгейту',
           inputLabel: 'Цельсия',
           outputLabel: 'Фаренгейт',
-          inputValues: 1,
+          inputValues: 0,
           outputValues: 0
         },
       ],

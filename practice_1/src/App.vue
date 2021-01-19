@@ -12,8 +12,8 @@
 import Header from "@/components/default/Header";
 import Converter from "@/components/Converter";
 import Form from "@/components/Form";
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap-vue/dist/bootstrap-vue.css';
 export default {
   name: 'App',
   components: {
@@ -59,5 +59,9 @@ body {
 }
 p {
   margin: 0;
+}
+.bg_prop {
+  background: #F9F9F9;
+  min-height: 100vh;
 }
 </style>

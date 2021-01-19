@@ -36,10 +36,6 @@ export default {
   background: #222222;
   height: 80px;
 }
-.bg_prop {
-  background: #F9F9F9;
-  height: 100vh;
-}
 .nav__font {
   font-weight: 400;
   font-size: 16px;

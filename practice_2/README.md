@@ -1,4 +1,4 @@
-# practice_1
+# practice_2
 
 ## Project setup
 ```

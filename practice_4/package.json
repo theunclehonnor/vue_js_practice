@@ -1,5 +1,5 @@
 {
-  "name": "practice_1",
+  "name": "Vue_js_intaro",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -12,9 +12,12 @@
     "bootstrap": "^4.5.3",
     "bootstrap-vue": "^2.21.2",
     "core-js": "^3.6.5",
-    "dotenv": "^8.2.0",
+    "jsonp": "^0.2.1",
+    "lodash": "^4.17.20",
     "vue": "^2.6.12",
+    "vue-advanced-search": "^0.1.43",
     "vue-axios": "^3.2.3",
+    "vue-lodash": "^2.1.2",
     "vuejs-datepicker": "^1.6.2"
   },
   "devDependencies": {

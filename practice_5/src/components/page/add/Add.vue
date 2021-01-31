@@ -1,42 +1,42 @@
 <template>
-  <b-container class="form">
+  <div class="form">
     <div class="d-flex">
       <b-col class="form_col form-input">
         <div>
           <b-form @submit="onSubmit" @reset="onReset" v-if="show">
             <!--Профессия-->
-              <b-form-group
-                  id="input-group-prof"
-                  :label="form.profession.label+':'"
-                  label-for="input-prof"
-              >
-                <b-form-input
-                    id="input-prof"
-                    v-model="form.profession.values"
-                    type="text"
-                    placeholder="Стажер"
-                    required
-                ></b-form-input>
-              </b-form-group>
+            <b-form-group
+                id="input-group-prof"
+                :label="form.profession.label+':'"
+                label-for="input-prof"
+            >
+              <b-form-input
+                  id="input-prof"
+                  v-model="form.profession.values"
+                  type="text"
+                  placeholder="Стажер"
+                  required
+              ></b-form-input>
+            </b-form-group>
             <!--Город-->
-              <b-form-group
-                  id="input-group-city"
-                  :label="form.city.label+':'"
-                  label-for="input-city"
-              >
-                <b-form-input
-                    id="input-city"
-                    v-model="city"
-                    type="text"
-                    placeholder="Липецк"
-                    required
-                ></b-form-input>
-                <b-list-group v-if="cities">
-                  <b-list-group-item v-for="(city,index) in cities" :key="index" button @click="clickCity(index)">
-                    {{ city.title }}
-                  </b-list-group-item>
-                </b-list-group>
-              </b-form-group>
+            <b-form-group
+                id="input-group-city"
+                :label="form.city.label+':'"
+                label-for="input-city"
+            >
+              <b-form-input
+                  id="input-city"
+                  v-model="city"
+                  type="text"
+                  placeholder="Липецк"
+                  required
+              ></b-form-input>
+              <b-list-group v-if="cities">
+                <b-list-group-item v-for="(city,index) in cities" :key="index" button @click="clickCity(index)">
+                  {{ city.title }}
+                </b-list-group-item>
+              </b-list-group>
+            </b-form-group>
             <!--Фото-->
             <b-form-group
                 id="input-group-photo"
@@ -201,15 +201,15 @@
         </div>
       </b-col>
     </div>
-  </b-container>
+  </div>
 </template>
 
 <script>
-import SelectStatus from "@/components/form/SelectStatus";
-import Education from "@/components/form/Education";
+import SelectStatus from '@/components/page/add/form/SelectStatus'
+import Education from "@/components/page/add/form/Education";
 import jsonp from 'jsonp';
 export default {
-  name: "Form",
+  name: "Add",
   components:{
     SelectStatus,
     Education
@@ -248,7 +248,7 @@ export default {
     }
   },
   watch: {
-    // эта функция запускается при любом изменении
+    // эта функция запускается при любом изменении вопроса
     city:  function () {
       this.cities = 'Ожидаю, когда вы закончите печатать...';
       this.debouncedGetAnswer();
@@ -271,8 +271,8 @@ export default {
     },
     clickCity(index){
       this.city = this.cities[index].title;
+      this.form.city.values = this.city;
       this.cities = [];
-      this.form.city.values = this.cities[index].title;
     },
     addEducation() {
       this.form.education.push(
@@ -365,7 +365,7 @@ export default {
 
 <style scoped>
 .form_col {
-  padding: 20px 100px 20px 100px;
+  padding: 20px 80px 20px 80px;
 }
 .img_size {
   max-width: 250px;

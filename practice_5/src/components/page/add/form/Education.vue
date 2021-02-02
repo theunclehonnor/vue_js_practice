@@ -1,7 +1,7 @@
 <template>
   <b-alert show variant="secondary" class="ml-5">
     <div v-if="index !== 0" class="d-flex justify-content-end">
-      <a href="" class="text-decoration-none link-education_color" @click.prevent="handleClick" @click="clickRemoveEducation">X</a>
+      <a href="" class="text-decoration-none link-education_color" @click.prevent="handleClick" @click="clickRemoveEducation(index)">X</a>
     </div>
     <b-form-group id="input-group-degree" :label="education.degree.label+':'" label-for="input-degree">
       <b-form-select
@@ -11,8 +11,8 @@
           required
       ></b-form-select>
     </b-form-group>
-    <template v-if="education.degree.values !== degrees[0] && education.degree.values !== null">
-      <b-form-group id="input-group-educationUniversity" :label="education.educationUniversity.label+':'" label-for="input-educationUniversity">
+    <template v-if="education.degree.values !== degrees[0] && education.degree.values !== ''">
+      <b-form-group id="input-group-education_university" :label="education.education_university.label+':'" label-for="input-education_university">
         <b-form-input
             id="input-education"
             v-model="educ"
@@ -44,19 +44,22 @@
       </b-form-group>
       <b-form-group
           id="input-group-yearEnd"
-          :label="education.yearEnd.label+':'"
+          :label="education.year_end.label+':'"
           label-for="input-yearEnd"
           description="Если учитесь в настоящее время — укажите год предполагаемого окончания"
       >
         <b-form-input
             id="input-yearEnd"
-            v-model="education.yearEnd.values"
+            v-model="education.year_end.values"
             placeholder="2021"
             required
         ></b-form-input>
       </b-form-group>
     </template>
-    <a v-if="education_length === index+1" href="" class="text-decoration-none link-education_color" @click.prevent="handleClick" @click="clickAddEducation">+Указать ещё одно место обучения</a>
+    <a v-if="education_length === index+1"
+       href="" class="text-decoration-none link-education_color"
+       @click.prevent="handleClick"
+       @click="clickAddEducation">+Указать ещё одно место обучения</a>
   </b-alert>
 </template>
 
@@ -81,6 +84,8 @@ export default {
   },
   created: function () {
     this.debouncedGetAnswer = this.lodash.debounce(this.getEduc, 500);
+    if(this.education.education_university.values !== '')
+      this.educ = this.education.education_university.values;
   },
   methods: {
     getEduc: function () {
@@ -102,7 +107,7 @@ export default {
     },
     clickEduc(index){
       this.educ = this.educs[index].title;
-      this.education.educationUniversity.values = this.educ;
+      this.education.education_university.values = this.educ;
       this.educs = [];
     },
     handleClick(e){

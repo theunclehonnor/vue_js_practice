@@ -1,6 +1,6 @@
 <template>
   <b-alert show variant="secondary" class="ml-5">
-    <div v-if="index !== 0" class="d-flex justify-content-end">
+    <div class="d-flex justify-content-end">
       <a href="" class="text-decoration-none link-education_color" @click.prevent="handleClick" @click="clickRemoveEducation(index)">X</a>
     </div>
     <b-form-group id="input-group-degree" :label="education.degree.label+':'" label-for="input-degree">

@@ -10,7 +10,7 @@ import VueAxios from 'vue-axios';
 import VueRouter from 'vue-router'
 
 Vue.config.productionTip = false
-// Подключение bootstrap-vue
+
 Vue.use(BootstrapVue)
 Vue.use(VueLodash, { name: 'custom' , lodash: lodash })
 Vue.use(VueAxios, axios)

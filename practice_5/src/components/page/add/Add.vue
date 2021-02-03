@@ -1,8 +1,9 @@
 <template>
   <div class="form">
-    <div class="d-flex">
+    <div class="d-flex justify-content-center">
 <!--      Блок работы с данными по резюме -->
-      <b-col class="form_col form-input">
+
+      <b-col v-if="redacted" class="form_col form-input">
         <div>
 <!--          При успехе появится сообщение-->
           <template v-if="showResume">
@@ -103,17 +104,22 @@
                <b-form-datepicker id="input-group-dateBirthday" v-model="form.birthday.values" placeholder="Не выбрана" class="mb-2"></b-form-datepicker>
              </b-form-group>
              <!--Образование-->
-             <Education
-                 v-for="(education,index) in form.education"
-                 :education="education"
-                 :education_length="form.education.length"
-                 :degrees="degrees"
-                 :index="index"
-                 :city="form.city.values"
-                 @add-education="addEducation"
-                 @remove-education="removeEducation"
-                 :key="index">
-             </Education>
+             <template v-if="this.form.education.length">
+               <Education
+                   v-for="(education,index) in form.education"
+                   :education="education"
+                   :education_length="form.education.length"
+                   :degrees="degrees"
+                   :index="index"
+                   :city="form.city.values"
+                   @add-education="addEducation"
+                   @remove-education="removeEducation"
+                   :key="index">
+               </Education>
+             </template>
+             <template v-else>
+               <b-button variant="outline-primary" @click="addEducation">Добавить образование</b-button>
+             </template>
              <!--Зарплата-->
              <b-form-group
                  id="input-group-salary"
@@ -182,42 +188,16 @@
          </template>
         </div>
       </b-col>
+
 <!--      Блок с выводом резюме -->
-      <b-col class="form_col form-output">
-        <h2 class="text-center">Резюме</h2>
-        <div class="">
-          <div class="d-flex justify-content-center">
-            <img v-if="showResume" :src="form.photo.values" alt="" class="img_size">
-          </div>
-          <p class="mb-2" v-for="(f,index) in form" :key="index">
-            <template v-if="f.label !== form.photo.label">
-              <template v-if="f !== form['education']">
-                {{f.label}}:
-              </template>
-              <template v-if="showResume & f !== form['education']">
-                {{f.values}}
-              </template>
-            </template>
-          </p>
-          <b-alert show variant="secondary" v-for="(education,index) in form.education" :key="index">
-            <template v-if="education.degree.values === degrees[0]">
-              <p>{{education.degree.label}}: {{education.degree.values}}</p>
-            </template>
-            <template v-else-if="education.degree.values === ''">
-              <p>{{education.degree.label}}:Отсутствует</p>
-            </template>
-            <template v-else>
-              <p v-for="(ed,ind) in education" :key="ind">
-                <template v-if="ed.label !== 'id'">
-                  {{ed.label}}:
-                  <template v-if="showResume">
-                    {{ed.values}}
-                  </template>
-                </template>
-              </p>
-            </template>
-          </b-alert>
-        </div>
+      <b-col cols="6" class="form_col form-output">
+        <!--      Кнопка, которая открывает форму редактирование при нажатии-->
+        <b-button v-if="!redacted" variant="outline-primary" @click="formActive">Редактировать</b-button>
+<!--   Блок с выводом резюме     -->
+        <h2 v-if="$route.name === 'edit'" class="text-center">Резюме</h2>
+        <h2 v-else-if="$route.name === 'add'"  class="text-center">Шаблон резюме</h2>
+        <Resume :showResume="showResume" :form="form" :degrees="degrees" :redacted="redacted"></Resume>
+
       </b-col>
     </div>
   </div>
@@ -225,14 +205,17 @@
 
 <script>
 import Education from "@/components/page/add/form/Education";
+import Resume from '@/components/page/add/Resume';
 import jsonp from 'jsonp';
 export default {
   name: "Add",
   components:{
-    Education
+    Education,
+    Resume
   },
   data() {
     return {
+      redacted: false,
       alert_text: [],
       cities: [],
       city: '',
@@ -245,16 +228,7 @@ export default {
         tel: {label:'Номер телефона', values: ''},
         email: {label:'Почта', values: ''},
         birthday: {label:'Дата рождения', values: ''},
-        education: [
-          {
-            id: {label:'id', values: ''},
-            degree: {label:'Уровень образования', values: 'Среднее'},
-            education_university: {label:'Учебное заведение', values: ''},
-            faculty: {label:'Факультет', values: ''},
-            specialization: {label:'Специализация', values: ''},
-            year_end: {label:'Год окончания', values: ''},
-          }
-        ],
+        education: [],
         wage: {label:'Ожидаемая заработная плата', values: ''},
         skills: {label:'Навыки', values: ''},
         about: {label:'О себе', values: ''},
@@ -273,6 +247,7 @@ export default {
         this.form.full_name.values = response.data[0].full_name;
         this.form.photo.values = response.data[0].photo;
         this.form.profession.values = response.data[0].profession;
+        this.form.city.values = response.data[0].city;
         this.city = response.data[0].city;
         this.form.tel.values = response.data[0].tel;
         this.form.email.values = response.data[0].email;
@@ -288,14 +263,7 @@ export default {
       });
       // запрос к апи на вывод информации об образовании по заданному кандидату
       this.axios.get('http://api/'+ this.$route.params.id +'/get-education').then(response => {
-        // console.log(response.data[0]);
-        this.form.education[0].id.values = response.data[0].id_educ;
-        this.form.education[0].degree.values = response.data[0].degree;
-        this.form.education[0].education_university.values = response.data[0].education_university;
-        this.form.education[0].faculty.values = response.data[0].faculty;
-        this.form.education[0].specialization.values = response.data[0].specialization;
-        this.form.education[0].year_end.values = response.data[0].year_end;
-        for(let i = 1; i < response.data.length; i++){
+        for(let i = 0; i < response.data.length; i++){
           this.addEducationAxios(response.data[i]);
         }
         // console.log(response.data);
@@ -410,11 +378,13 @@ export default {
         this.errors.push('Укажите дату рождения');
 
       // валидация даты окончания учёбы
-      for (let i = 0; i < this.form.education.length; i++) {
-        if (this.form.education[i].degree.values !== this.degrees[0] && this.form.education[i].degree.values !== '') {
-          let regYearEnd = new RegExp('\\d{' + this.form.education[i].year_end.values.length + '}', 'gim');
-          if (!regYearEnd.test(this.form.education[i].year_end.values))
-            this.errors.push('Не корректно заполнен год окончания');
+      if(this.form.education.length) {
+        for (let i = 0; i < this.form.education.length; i++) {
+          if (this.form.education[i].degree.values !== this.degrees[0] && this.form.education[i].degree.values !== '') {
+            let regYearEnd = new RegExp('\\d{' + this.form.education[i].year_end.values.length + '}', 'gim');
+            if (!regYearEnd.test(this.form.education[i].year_end.values))
+              this.errors.push('Не корректно заполнен год окончания');
+          }
         }
       }
       // валидация ожидаемой зп
@@ -462,7 +432,7 @@ export default {
             this.alert_text.push(response.data);
             this.showResume = true;
           }).catch(error => {
-            this.error.push(error);
+            this.errors.push(error);
             this.showResume = false;
           });
         }
@@ -484,14 +454,17 @@ export default {
           this.showResume = true;
         }).catch(error => {
           // console.log(error);
-          this.error.push(error);
+          this.errors.push(error);
           this.showResume = false;
         });
       }
+      if(!this.errors.length)
+        this.formActive();
     },
     onReset(event) {
       event.preventDefault();
       // Reset our form values
+      this.redacted = true;
       this.alert_text = [];
       this.cities = [];
       this.city = '';
@@ -523,6 +496,9 @@ export default {
         this.show = true;
       })
     },
+    formActive() {
+      this.redacted = !this.redacted;
+    }
   }
 }
 </script>
@@ -530,9 +506,5 @@ export default {
 <style scoped>
 .form_col {
   padding: 20px 80px 20px 80px;
-}
-.img_size {
-  max-width: 250px;
-  max-height: 250px;
 }
 </style>
